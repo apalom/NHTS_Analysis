@@ -17,7 +17,7 @@ whyIDsum = {}
 whyIDsumList = []
 
 # NHTS2009 Data Location for Alex's Laptop 
-df0 = pd.read_csv(r'C:\Users\Alex Palomino\Google Drive\Classes\18_Spring\CS6140 Data Mining\CS6140 Project\Data\CSV\DAYV2PUB.CSV', header=0)
+df0 = pd.read_csv(r'C:\Users\avi_b\Box\CS6140 Project\Data\CSV\DAYV2PUB.CSV', header=0)
 
 # NHTS2009 Data Location for Alex's Lab Computer
 # df0 = pd.read_csv(r'C:\Users\Alex\Google Drive\Classes\18_Spring\CS6140 Data Mining\CS6140 Project\Data\CSV\DAYV2PUB.CSV', header=0)
