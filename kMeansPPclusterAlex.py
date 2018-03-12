@@ -8,6 +8,8 @@ Created on Sun Mar 11 11:25:54 2018
 # import libraries
 import pandas as pd
 from sklearn.cluster import KMeans
+from sklearn.cluster import AffinityPropagation
+from sklearn import metrics
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
@@ -27,6 +29,24 @@ centers = kmeans.cluster_centers_
 score = kmeans.score(dfAlex)
 
 elapsed = timeit.default_timer() - start_time
+
+# Compute Affinity Propagation
+af = AffinityPropagation(preference=-50).fit(kmeans)
+cluster_centers_indices = af.cluster_centers_indices_
+labels = af.labels_
+
+n_clusters_ = len(cluster_centers_indices)
+
+print('Estimated number of clusters: %d' % n_clusters_)
+print("Homogeneity: %0.3f" % metrics.homogeneity_score(labels_true, labels))
+print("Completeness: %0.3f" % metrics.completeness_score(labels_true, labels))
+print("V-measure: %0.3f" % metrics.v_measure_score(labels_true, labels))
+print("Adjusted Rand Index: %0.3f"
+      % metrics.adjusted_rand_score(labels_true, labels))
+print("Adjusted Mutual Information: %0.3f"
+      % metrics.adjusted_mutual_info_score(labels_true, labels))
+print("Silhouette Coefficient: %0.3f"
+      % metrics.silhouette_score(X, labels, metric='sqeuclidean'))
 
 # timeit statement
 print('Execution time: {0:.4f} sec'.format(elapsed))
@@ -51,37 +71,39 @@ for j in range(0,len(dfAlex.index)):
     if phi[j] == 4:
         k5.append(j)
 
-k1 = np.asarray(k1)
-k2 = np.asarray(k2)
-k3 = np.asarray(k3)
-k4 = np.asarray(k4)
-k5 = np.asarray(k5)
+dfk1 = dfAlex.filter(k1, axis = 0)
+dfk2 = dfAlex.filter(k2, axis = 0)
+dfk3 = dfAlex.filter(k3, axis = 0)
+dfk4 = dfAlex.filter(k4, axis = 0)
+dfk5 = dfAlex.filter(k5, axis = 0)
 
 fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
+threedee = plt.figure().gca(projection='3d')
 
 plt.grid(True, which='both')
-#plt.axvline(x=0, color='k')
-#plt.axhline(y=0, color='k')
 
 for k in range(len(k1)):
-    plt.scatter(dfAlex[k1[k]], c='r',marker=".")
+    row = k1[k]
+    threedee.scatter(dfk1.loc[row][0],dfk1.loc[row][1],dfk1.loc[row][2],c='r',marker=".")
 
-plt.scatter(dfAlex[k2,0], dfAlex[k2,1], dfAlex[k1,2], c='g',marker=".")
-plt.scatter(dfAlex[k3,0], dfAlex[k3,1], dfAlex[k1,2], c='b',marker=".")
-plt.scatter(dfAlex[k4,0], dfAlex[k4,1], dfAlex[k4,2], c='m',marker=".")
-plt.scatter(dfAlex[k4,0], dfAlex[k4,1], dfAlex[k4,2], c='k',marker=".")
+for k in range(len(k2)):
+    row = k2[k]
+    threedee.scatter(dfk2.loc[row][0],dfk2.loc[row][1],dfk2.loc[row][2],c='g',marker=".")
 
-'''
-x3 = dfAlex['STRTTIME']
-y3 = dfAlex['TRVL_MIN']
-z3 = dfAlex['WHYTRP1S']
+for k in range(len(k3)):
+    row = k3[k]
+    threedee.scatter(dfk3.loc[row][0],dfk3.loc[row][1],dfk3.loc[row][2],c='b',marker=".")
 
-ax.scatter(x3, y3, z3)
-'''
+for k in range(len(k4)):
+    row = k4[k]
+    threedee.scatter(dfk4.loc[row][0],dfk4.loc[row][1],dfk4.loc[row][2],c='m',marker=".")
 
-ax.set_xlabel('STRTTIME')
-ax.set_ylabel('TRVL_MIN')
-ax.set_zlabel('WHYTRP1S')
+for k in range(len(k5)):
+    row = k5[k]
+    threedee.scatter(dfk5.loc[row][0],dfk5.loc[row][1],dfk5.loc[row][2],c='k',marker=".")
+
+threedee.set_xlabel('STRTTIME')
+threedee.set_ylabel('TRVL_MIN')
+threedee.set_zlabel('WHYTRP1S')
 
 plt.show()
