@@ -22,33 +22,29 @@ dfAlex = df0.filter(['STRTTIME','TRVL_MIN','WHYTRP1S'], axis = 1)
 
 kmeans = KMeans(n_clusters=5, init='k-means++', n_init=10, max_iter=300).fit(dfAlex)
 
-phi = kmeans.predict(dfAlex)
 
+phi_predict = kmeans.predict(dfAlex)
+phi_true = kmeans.labels_
 centers = kmeans.cluster_centers_
-
 score = kmeans.score(dfAlex)
 
-elapsed = timeit.default_timer() - start_time
 
-# Compute Affinity Propagation
-af = AffinityPropagation(preference=-50).fit(kmeans)
-cluster_centers_indices = af.cluster_centers_indices_
-labels = af.labels_
-
-n_clusters_ = len(cluster_centers_indices)
+# Compute Clustering Metrics
+n_clusters_ = len(centers)
 
 print('Estimated number of clusters: %d' % n_clusters_)
-print("Homogeneity: %0.3f" % metrics.homogeneity_score(labels_true, labels))
-print("Completeness: %0.3f" % metrics.completeness_score(labels_true, labels))
-print("V-measure: %0.3f" % metrics.v_measure_score(labels_true, labels))
+print("Homogeneity: %0.3f" % metrics.homogeneity_score(phi_true, phi_predict))
+print("Completeness: %0.3f" % metrics.completeness_score(phi_true, phi_predict))
+print("V-measure: %0.3f" % metrics.v_measure_score(phi_true, phi_predict))
 print("Adjusted Rand Index: %0.3f"
-      % metrics.adjusted_rand_score(labels_true, labels))
+      % metrics.adjusted_rand_score(phi_true, phi_predict))
 print("Adjusted Mutual Information: %0.3f"
-      % metrics.adjusted_mutual_info_score(labels_true, labels))
-print("Silhouette Coefficient: %0.3f"
-      % metrics.silhouette_score(X, labels, metric='sqeuclidean'))
+      % metrics.adjusted_mutual_info_score(phi_true, phi_predict))
+#print("Silhouette Coefficient: %0.3f"
+#      % metrics.silhouette_score(dfAlex, phi_predict, metric='sqeuclidean'))
 
 # timeit statement
+elapsed = timeit.default_timer() - start_time
 print('Execution time: {0:.4f} sec'.format(elapsed))
 
 # %% 3-D Plot
@@ -60,15 +56,15 @@ k4 = []
 k5 = []
 
 for j in range(0,len(dfAlex.index)):
-    if phi[j] == 0:
+    if phi_true[j] == 0:
         k1.append(j)
-    if phi[j] == 1:
+    if phi_true[j] == 1:
         k2.append(j)
-    if phi[j] == 2:
+    if phi_true[j] == 2:
         k3.append(j)
-    if phi[j] == 3:
+    if phi_true[j] == 3:
         k4.append(j)
-    if phi[j] == 4:
+    if phi_true[j] == 4:
         k5.append(j)
 
 dfk1 = dfAlex.filter(k1, axis = 0)
