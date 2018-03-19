@@ -23,7 +23,7 @@ clusters = 5
 # filter dataframe zero (raw NHTS2009) to dimensions of interest
 #dfAlex = df0.filter(['STRTTIME','TRVL_MIN','WHYTRP1S'], axis = 1)
 dfAlex = df0.filter(['STRTTIME','WHYTRP1S'], axis = 1)
-dfAlex = dfAlex.head(100) # shows first n rows
+dfAlex = dfAlex.head(1000) # shows first n rows
 
 
 kmeans = KMeans(n_clusters=clusters, init='k-means++', n_init=10, max_iter=300).fit(dfAlex)
@@ -82,12 +82,12 @@ fig = plt.figure()
 kMX_plot = plt.figure() 
 
 #plt.grid(True, which='both')
-
+'''
 plt.scatter(matAlex[:,0],matAlex[:,1])
 plt.scatter(centers[:,0],centers[:,1],marker='o')
 plt.scatter(centersReal[:,0],centersReal[:,1],c='w',marker='*',s=10)
 print('k-Means')
-
+'''
 # %% 2-D Plot 2
 
 k1 = []
@@ -134,10 +134,11 @@ for k in range(len(k5)):
     row = k5[k]
     plt.scatter(dfk5.loc[row][0],dfk5.loc[row][1],c='k',marker=".")
 
+plt.scatter(centers[:,0],centers[:,1],marker='o')
 plt.scatter(centersReal[:,0],centersReal[:,1],c='w',marker='*',s=5)
 
 # %% 3-D Plot
-
+'''
 k1 = []
 k2 = []
 k3 = []
@@ -192,3 +193,4 @@ threedee.set_ylabel('TRVL_MIN')
 threedee.set_zlabel('WHYTRP1S')
 
 plt.show()
+'''
