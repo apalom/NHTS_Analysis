@@ -22,7 +22,7 @@ clusters = 5
 
 # filter dataframe zero (raw NHTS2009) to dimensions of interest
 #dfAlex = df0.filter(['STRTTIME','TRVL_MIN','WHYTRP1S'], axis = 1)
-dfAlex = df0.filter(['STRTTIME','WHYTRP1S'], axis = 1)
+dfAlex = df0.filter(['STRTTIME','WHYTO'], axis = 1)
 dfAlex = dfAlex.head(1000) # shows first n rows
 
 
@@ -134,8 +134,12 @@ for k in range(len(k5)):
     row = k5[k]
     plt.scatter(dfk5.loc[row][0],dfk5.loc[row][1],c='k',marker=".")
 
-plt.scatter(centers[:,0],centers[:,1],marker='o')
+plt.scatter(centers[:,0],centers[:,1],marker='v')
 plt.scatter(centersReal[:,0],centersReal[:,1],c='w',marker='*',s=5)
+
+plt.title('2-D Cluster')
+plt.xlabel('STRTTIME')
+plt.ylabel('WHYTRP1S')
 
 # %% 3-D Plot
 '''
