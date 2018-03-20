@@ -19,8 +19,8 @@ import timeit
 start_time = timeit.default_timer()
 
 clusters = 4
-numTrips = 500
-colNames = ['STRTTIME','TRVLCMIN']
+numTrips = 1000
+colNames = ['TRVLCMIN','HHFAMINC']
 # Filter dataframe zero (raw NHTS2009) to dimensions of interest
 #dfNHTS = df0.filter(['STRTTIME','TRVL_MIN','WHYTRP1S'], axis = 1)
 dfNHTS = df0.filter(colNames, axis = 1)
@@ -91,17 +91,7 @@ for i in idx:
     centersReal[j] = matNHTS[i]
     j += 1
 
-
-kMX_plot = plt.figure() 
-
-#plt.grid(True, which='both')
-'''
-plt.scatter(matNorm[:,0],matNorm[:,1])
-plt.scatter(centers[:,0],centers[:,1],marker='o')
-plt.scatter(centersReal[:,0],centersReal[:,1],c='w',marker='*',s=10)
-print('k-Means')
-'''
-# %% Create centers dataframes
+ # %% Create centers dataframes
 
 d = {colNames[0]: centersReal[:,0], colNames[1]: centersReal[:,1]}
 dfCenters = pd.DataFrame(data=d)
