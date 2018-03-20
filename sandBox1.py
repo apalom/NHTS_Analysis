@@ -5,58 +5,69 @@ Created on Mon Mar 19 09:28:58 2018
 @author: Alex
 """
 
-from sklearn.cluster import KMeans
-from sklearn import metrics
-from scipy.spatial import distance
-import numpy as np
+'''
+import numpy
+from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 
-clusters = 4
+data = dfRk1.iloc[:,0]
 
-kMX = np.array([[0, 2], [2, 3], [2, 1], [1, 0], [2, 3],
-              [4, 2], [1, 4], [3, 1], [4, 4], [3, 0]])
+hist, bin_edges = numpy.histogram(data, density=True)
+bin_centres = (bin_edges[:-1] + bin_edges[1:])/2
 
-kM = KMeans(n_clusters=clusters, init='k-means++').fit(kMX)
-
-kM_labels = kM.labels_
-
-kM_predict = kM.predict(kMX)
-
-kM_centers = kM.cluster_centers_
-
-kM_score = kM.score(kMX)
-
-kM_Metscore = metrics.adjusted_rand_score(kM_labels, kM_predict)
+#fit type
 
 
-dst = np.zeros((10,clusters))
-row = 0
-col = 0
-for pt in kMX:
-    col = 0
-    for c in kM_centers:
-            dst[row][col] = distance.euclidean(pt,c)
-            col += 1
-    row += 1
+# Define model function to be used to fit to the data above:
+def gauss(x, *p):
+    A, mu, sigma = p
+    return A*numpy.exp(-(x-mu)**2/(2.*sigma**2))
 
-idx = np.argmin(dst, axis = 0)
-kM_centersReal = np.zeros((clusters,2))
-j = 0
+# p0 is the initial guess for the fitting coefficients (A, mu and sigma above)
+p0 = [1., 0., 1.]
 
-for i in idx:
-    kM_centersReal[j] = kMX[i]
-    j += 1
-    
-    #np.argmin(a, axis=0)
+coeff, var_matrix = curve_fit(gauss, bin_centres, hist, p0=p0)
+
+# Get the fitted curve
+hist_fit = gauss(bin_centres, *coeff)
+
+plt.plot(bin_centres, hist, label='Test data')
+plt.plot(bin_centres, hist_fit, label='Fitted data')
+
+# Finally, lets get the fitting parameters, i.e. the mean and standard deviation:
+print('Fitted mean = ' % coeff[1])
+print('Fitted standard deviation = ' % coeff[2])
 
 
-fig = plt.figure()
-kMX_plot = plt.figure() 
+plt.show()
 
-#plt.grid(True, which='both')
+'''
 
-plt.scatter(kMX[:,0],kMX[:,1])
-plt.scatter(kM_centers[:,0],kM_centers[:,1],marker='o')
-plt.scatter(kM_centersReal[:,0],kM_centersReal[:,1],c='w',marker='*',s=10)
-print('k-Means')
+from scipy.stats import norm
+from numpy import linspace
+from pylab import plot,show,hist,figure,title
 
+# picking 150 of from a normal distrubution
+# with mean 0 and standard deviation 1
+data = dfRk3.iloc[:,0].as_matrix()
+samp = data
+
+#samp = norm.rvs(loc=0,scale=1,size=150) 
+
+mu, std = norm.fit(samp) # distribution fitting
+
+# now, param[0] and param[1] are the mean and 
+# the standard deviation of the fitted distribution
+x = linspace(min(samp),max(samp),100)
+# fitted distribution
+pdf_fitted = norm.pdf(x,loc=mu,scale=std)
+# original distribution
+pdf = norm.pdf(x)
+
+title('Normal distribution')
+plot(x,pdf_fitted,'r-',x,pdf,'b-')
+hist(samp,normed=1,alpha=.3)
+show()
+
+print('Norm.Dist Mean: %0.3f ' % mu)
+print('Norm.Dist Standard Deviation: %0.3f ' % std)

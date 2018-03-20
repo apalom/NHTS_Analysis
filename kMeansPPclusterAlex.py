@@ -20,7 +20,7 @@ start_time = timeit.default_timer()
 
 clusters = 4
 numTrips = 1000
-colNames = ['TRVLCMIN','HHFAMINC']
+colNames = ['STRTTIME','HHFAMINC']
 # Filter dataframe zero (raw NHTS2009) to dimensions of interest
 #dfNHTS = df0.filter(['STRTTIME','TRVL_MIN','WHYTRP1S'], axis = 1)
 dfNHTS = df0.filter(colNames, axis = 1)
@@ -91,10 +91,6 @@ for i in idx:
     centersReal[j] = matNHTS[i]
     j += 1
 
- # %% Create centers dataframes
-
-d = {colNames[0]: centersReal[:,0], colNames[1]: centersReal[:,1]}
-dfCenters = pd.DataFrame(data=d)
 
 # %% 2-D Plot 2
 
@@ -155,3 +151,13 @@ plt.xlabel(colNames[0])
 plt.ylabel(colNames[1])
 
 
+ # %% Create centers dataframes
+
+d = {colNames[0]: centersReal[:,0], colNames[1]: centersReal[:,1]}
+dfCenters = pd.DataFrame(data=d)
+
+dfRk1 = dfNHTS.filter(k1, axis = 0)
+dfRk2 = dfNHTS.filter(k2, axis = 0)
+dfRk3 = dfNHTS.filter(k3, axis = 0)
+dfRk4 = dfNHTS.filter(k4, axis = 0)
+dfRk5 = dfNHTS.filter(k5, axis = 0)
