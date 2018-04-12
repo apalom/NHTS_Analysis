@@ -20,8 +20,8 @@ whyIDsumList = []
 #df0 = pd.read_csv(r'C:\Users\avi_b\Box\CS6140 Project\Data\CSV\DAYV2PUB.CSV', header=0)
 
 # NHTS2009 Data Location for Alex's Lab Computer
-#df0 = pd.read_csv(r'C:\Users\Alex\Documents\NHTS_Data\CSV\DAYV2PUB.CSV', header=0)
-df0 = pd.read_csv(r'C:\Users\Alex Palomino\Documents\NHTS_Data\CSV\DAYV2PUB.CSV', header=0)
+df0 = pd.read_csv(r'C:\Users\Alex\Documents\NHTS_2017\trippub.CSV', header=0)
+#df0 = pd.read_csv(r'C:\Users\Alex Palomino\Documents\NHTS_2017\trippub.CSV', header=0)
 
 # filter dataframe zero (raw NHTS2009) to columns listed in filter
 df1 = df0.filter(['TDCASEID','TRAVDAY','STRTTIME','DWELTIME','ENDTIME','TRIPPURP',

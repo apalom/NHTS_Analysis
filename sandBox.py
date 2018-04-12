@@ -4,20 +4,23 @@ Created on Mon Feb 19 10:45:02 2018
 
 @author: Alex Palomino
 """
-
+# import libraries
+import pandas as pd
 import timeit
+import matplotlib.pyplot as plt
 
 timeExec= []
 start_time = timeit.default_timer()
 
+# Column names for filter
+colNames = ['TDCASEID','STRTTIME','ENDTIME','WHYTRP1S']
 
-whyID = {'-1' : 'Appropriate skip' ,
-'-7' : 'Refused' ,
-'-8' : 'Dont know' ,
-'-9' : 'Not ascertained' ,
-'1' : 'Home' ,
-'10' : 'Work' ,
-'11' : 'Go to work' ,}
+# NHTS2009 Data Location for Alex's Lab Computer
+df0 = pd.read_csv(r'C:\Users\Alex\Documents\NHTS_2017\trippub.CSV', header=0)
+
+dfNHTS = df0.filter(colNames, axis = 1)
+firstNHTSrows = dfNHTS.head(25) 
+
 
 
 elapsed = timeit.default_timer() - start_time

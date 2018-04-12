@@ -20,7 +20,7 @@ start_time = timeit.default_timer()
 
 clusters = 4
 numTrips = 1000
-colNames = ['STRTTIME','HHFAMINC']
+colNames = ['TDCASEID','STRTTIME','ENDTIME','WHYTRP1S']
 # Filter dataframe zero (raw NHTS2009) to dimensions of interest
 #dfNHTS = df0.filter(['STRTTIME','TRVL_MIN','WHYTRP1S'], axis = 1)
 dfNHTS = df0.filter(colNames, axis = 1)
