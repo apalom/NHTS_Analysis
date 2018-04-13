@@ -17,7 +17,10 @@ whyIDsum = {}
 whyIDsumList = []
 
 # NHTS2009 Data Location for Alex's Laptop 
+#df0 = pd.read_csv(r'C:\Users\Avishan\Box\CS6140 Project\Data\CSV\DAYV2PUB.CSV', header=0)
 df0 = pd.read_csv(r'C:\Users\avi_b\Box\CS6140 Project\Data\CSV\DAYV2PUB.CSV', header=0)
+
+df2 = pd.read_csv(r'C:\Users\avi_b\Box\Work\Second semester\Data mining\CS6140_Project\NHTS 2009\CA-Jan2009.CSV', header=0)
 
 # NHTS2009 Data Location for Alex's Lab Computer
 # df0 = pd.read_csv(r'C:\Users\Alex\Google Drive\Classes\18_Spring\CS6140 Data Mining\CS6140 Project\Data\CSV\DAYV2PUB.CSV', header=0)
@@ -58,8 +61,8 @@ print('Execution time: {0:.4f} sec'.format(elapsed))
 # %% plotting section
 
 # plots histogram
-plotHistSmry = df1['WHYTRP1S'].hist(bins=25)
-plotPieSmry = plt.pie(df1['WHYTRP1S'])
+#plotHistSmry = df1['WHYTRP1S'].hist(bins=25)
+#plotPieSmry = plt.pie(df1['WHYTRP1S'])
 #plotPieSmry = plt.pie(df1['WHYTRP1S'], labels=whyIDsumList, autopct='%1.0f%%)
 #plt.plot("whyDescSmry",type="bar")
 #df1["WHYFROM"].plot(kind="bar")
