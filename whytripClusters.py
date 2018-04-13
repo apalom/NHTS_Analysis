@@ -4,6 +4,7 @@ Created on Mon Feb 19 10:45:02 2018
 
 @author: Alex Palomino
 """
+
 # import libraries
 import pandas as pd
 import numpy as np
@@ -43,6 +44,8 @@ kHomePhi = kHome.labels_
 kHomePhiPredict = kHome.predict(dfHome)
 kHomeCenters = kHome.cluster_centers_
 #['ENDTIME','DWELTIME']
+#dfWork = dfNHTS.loc[(dfNHTS['WHYTRP1S'] == 10) & (dfNHTS['HHSTFIPS'] == 6)]
+'''
 
 # Work WHYTRP1S 
 dfWork = dfNHTS.loc[dfNHTS['WHYTRP1S'] == 10]
@@ -56,7 +59,7 @@ kWorkPhi = kWork.labels_
 kWorkPhiPredict = kWork.predict(dfWork)
 kWorkCenters = kWork.cluster_centers_
 
-
+'''
 # School WHYTRP1S 
 dfSchool = dfNHTS.loc[dfNHTS['WHYTRP1S'] == 20]
 dfSchool = dfSchool.filter(['ENDTIME','DWELTIME'])
@@ -79,8 +82,6 @@ dfMedical = dfMedical.drop(['index'], axis=1)
 kMedical = KMeans(n_clusters=clusters, init='k-means++', n_init=10, max_iter=300).fit(dfMedical)
 kMedicalPhi = kMedical.labels_
 kMedicalCenters = kMedical.cluster_centers_
-
-
 
 # Shopping WHYTRP1S 
 dfShopping = dfNHTS.loc[dfNHTS['WHYTRP1S'] == 40]
@@ -128,7 +129,6 @@ kMeals = KMeans(n_clusters=clusters, init='k-means++', n_init=10, max_iter=300).
 kMealsPhi = kMeals.labels_
 kMealsCenters = kMeals.cluster_centers_
 
-'''
 # Other WHYTRP1S 
 dfOther = dfNHTS.loc[dfNHTS['WHYTRP1S'] == 97]
 dfOther = dfOther.filter(['STRTTIME','ENDTIME'])
@@ -139,7 +139,7 @@ dfOther = dfOther.drop(['index'], axis=1)
 kOther = KMeans(n_clusters=clusters, init='k-means++', n_init=10, max_iter=300).fit(dfOther)
 kOtherPhi = kOther.labels_    
 kOtherCenters = kOther.cluster_centers_
-
+'''
 
 elapsed = timeit.default_timer() - start_time
 
