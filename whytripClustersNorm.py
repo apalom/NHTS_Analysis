@@ -63,7 +63,7 @@ kHomeCenters = kHome.cluster_centers_
 # Work WHYTRP1S 
 dfWork = dfNHTS.loc[dfNHTS['WHYTRP1S'] == 10]
 dfWork = dfWork.filter(dfFilter)
-dfWork = dfWork.head(5000)
+dfWork = dfWork.head(20000)
 dfWork = dfWork.reset_index()
 dfWork = dfWork.drop(['index'], axis=1)
 
