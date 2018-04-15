@@ -17,11 +17,20 @@ elapsed = 0
 timeExec= []
 start_time = timeit.default_timer()
 
+# Variables
+clusters = 6
+numTrips = 5000
+
 # Column names for filter
+#-- Start vs. End --#
 #colNames = ['STRTTIME','ENDTIME','WHYTRP1S']
 #dfFilter = ['STRTTIME','ENDTIME']
-colNames = ['ENDTIME','DWELTIME','WHYTRP1S']
-dfFilter = ['ENDTIME','DWELTIME']
+#-- End vs. Dwell --#
+#colNames = ['ENDTIME','DWELTIME','WHYTRP1S']
+#dfFilter = ['ENDTIME','DWELTIME']
+#-- Start vs. Trip Miles --#
+colNames = ['STRTTIME','TRPMILES','WHYTRP1S']
+dfFilter = ['STRTTIME','TRPMILES']
 
 # NHTS2009 Data Location for Alex's Lab Computer
 df0 = pd.read_csv(r'C:\Users\Alex\Documents\NHTS_2017\trippub.CSV', header=0)
@@ -33,16 +42,16 @@ dfNHTS = df0.filter(colNames, axis=1)
 # For START v. END time normalization
 dfNHTS.iloc[:,0] = dfNHTS.iloc[:,0]/2400 #Normalize STRTTIME
 dfNHTS.iloc[:,1] = dfNHTS.iloc[:,1]/2400 #Normalize ENDTIME
-'''
 
 # For END v. DWELL time normalization
 dfNHTS.iloc[:,0] = dfNHTS.iloc[:,0]/2400 #Normalize ENDTIME
 dfNHTS.iloc[:,1] = dfNHTS.iloc[:,1]/dfNHTS.max()[1] #Normalize DWELTIME
+'''
+
+dfNHTS.iloc[:,0] = dfNHTS.iloc[:,0]/2400 #Normalize STRTTIME
+dfNHTS.iloc[:,1] = dfNHTS.iloc[:,1]/dfNHTS.max()[1] #Normalize TRPMILES
 
 firstNHTSrows = dfNHTS.head(50) 
-
-# Variables
-clusters = 6
 
 '''
 # Home WHYTRP1S 
@@ -63,7 +72,7 @@ kHomeCenters = kHome.cluster_centers_
 # Work WHYTRP1S 
 dfWork = dfNHTS.loc[dfNHTS['WHYTRP1S'] == 10]
 dfWork = dfWork.filter(dfFilter)
-dfWork = dfWork.head(20000)
+dfWork = dfWork.head(numTrips)
 dfWork = dfWork.reset_index()
 dfWork = dfWork.drop(['index'], axis=1)
 
@@ -277,6 +286,7 @@ plt.scatter(centersReal[:,0],centersReal[:,1],c='w',marker='*',s=5)
 plt.title('2-D Cluster')
 plt.xlabel(colNames[0])
 plt.ylabel(colNames[1])
+plt.show()
 
 elapsed = timeit.default_timer() - start_time
 print('Step 3 Execution time: {0:.2f} sec'.format(elapsed))
@@ -373,3 +383,105 @@ scoreMin = np.mean(dstMin)
 
 elapsed = timeit.default_timer() - start_time
 print('Step 4 Execution time: {0:.2f} sec'.format(elapsed))
+
+   
+# %% Plot Histograms
+
+elapsed = 0
+timeExec= []
+start_time = timeit.default_timer()
+
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
+
+histFilter = ['STRTTIME','ENDTIME','DWELTIME','TRPMILES','WHYTRP1S']
+
+# Organize data for histogram
+dfHist = df0.filter(histFilter, axis=1)
+dfHist = dfHist.loc[(df0['WHYTRP1S'] == 10) & (df0['DWELTIME'] != -9)]
+dfHist = dfHist.filter(histFilter)
+dfHist = dfHist.head(numTrips)
+dfHist = dfHist.reset_index()
+dfHist = dfHist.drop(['index'], axis=1)
+matHist = dfHist.as_matrix()
+
+# Function to convert histogram plot to %
+def to_percent(y, position):
+    # Ignore the passed in position. This has the effect of scaling the default
+    # tick locations.
+    s = str(scale * y)
+
+    # The percent symbol needs escaping in latex
+    if matplotlib.rcParams['text.usetex'] is True:
+        return s + r'$\%$'
+    else:
+        return s + '%'
+
+#-----------------------------------------------------------#
+# Plot Starttime Histogram
+plotHist0 = plt.hist(matHist[:,0], bins=24, normed='density')
+
+# Create the formatter using the function to_percent. This multiplies all the
+# default labels by 100, making them all percentages
+scale = 10000
+formatter = FuncFormatter(to_percent)
+
+# Set the formatter
+plt.yticks(np.arange(0, 0.002, step=0.0001))
+plt.gca().yaxis.set_major_formatter(formatter)
+plt.title('Histogram of Start Time')
+plt.show()
+
+#----------------------------------------------------------#
+# Plot Endtime Histogram
+plotHist1 = plt.hist(matHist[:,1], bins=24, normed='density')
+
+# Create the formatter using the function to_percent. This multiplies all the
+# default labels by 100, making them all percentages
+scale = 10000
+formatter = FuncFormatter(to_percent)
+
+# Set the formatter
+plt.gca().yaxis.set_major_formatter(formatter)
+plt.title('Histogram of Endtime')
+plt.show()
+
+# dfNHTS.iloc[:,1] = dfNHTS.iloc[:,1]/dfNHTS.max()[1] 
+
+#----------------------------------------------------------#
+# Plot Dwelltime Histogram
+plotHist2 = plt.hist(matHist[:,2], bins=10, normed='density')
+
+# Create the formatter using the function to_percent. This multiplies all the
+# default labels by 100, making them all percentages
+scale = 10000
+formatter = FuncFormatter(to_percent)
+
+# Set the formatter
+plt.gca().yaxis.set_major_formatter(formatter)
+plt.title('Histogram of Dwelltime')
+plt.show()
+
+#----------------------------------------------------------#
+# Plot TripMiles Histogram
+plotHist3 = plt.hist(matHist[:,3], bins='auto', normed='density', range=(0,50))
+ax = plotHist3
+
+# Create the formatter using the function to_percent. This multiplies all the
+# default labels by 100, making them all percentages
+#formatter = FuncFormatter(to_percent)
+
+# Set the formatter
+scale = 100
+formatter = FuncFormatter(to_percent)
+
+#plt.yticks(range(0, ymax, ymin))
+plt.gca().yaxis.set_major_formatter(formatter)
+plt.title('Histogram of Tripmiles')
+plt.show()
+
+#----------------------------------------------------------#
+
+elapsed = timeit.default_timer() - start_time
+print('Step 5 Execution time: {0:.2f} sec'.format(elapsed))
