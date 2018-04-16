@@ -18,8 +18,8 @@ timeExec= []
 start_time = timeit.default_timer()
 
 # Variables
-clusters = 3
-numTrips = 50000
+clusters = 4
+numTrips = 10000
 
 # NHTS2017 Data Location for Alex's Lab Computer
 df0 = pd.read_csv(r'C:\Users\Alex\Documents\NHTS_2017\trippub.CSV', header=0)
@@ -79,9 +79,15 @@ for idx, row in dfNHTS.iterrows():
 # For START v. END time normalization
 #dfNHTS.iloc[:,0] = dfNHTS.iloc[:,0]/dfNHTS.max()[0] #Normalize STRTTIME
 #dfNHTS.iloc[:,1] = dfNHTS.iloc[:,1]/dfNHTS.max()[1] #Normalize ENDTIME
-        
-dfNHTS.iloc[:,0] = dfNHTS.iloc[:,0]/dfNHTS.max()[0] #Normalize ENDTIME
-dfNHTS.iloc[:,1] = dfNHTS.iloc[:,1]/dfNHTS.max()[1] #Normalize DWELTIME
+max0 = dfNHTS.max()[0]    
+max1 = dfNHTS.max()[1]   
+
+min0 = dfNHTS.min()[0]    
+min1 = dfNHTS.min()[1]  
+
+
+dfNHTS.iloc[:,0] = (dfNHTS.iloc[:,0]-min0)/(max0-min0) #Normalize ENDTIME
+dfNHTS.iloc[:,1] = (dfNHTS.iloc[:,1]-min1)/(max1-min1) #Normalize DWELTIME
 
 
 '''
