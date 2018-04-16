@@ -32,6 +32,5 @@ plt.plot(x,pdf_fitted,'b-')
 plt.hist(x,normed=1,alpha=.3)
 plt.show()
 
-#dist_names = ['gamma', 'beta', 'rayleigh', 'norm', 'pareto']
 
 

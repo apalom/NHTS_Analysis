@@ -19,7 +19,7 @@ start_time = timeit.default_timer()
 
 # Variables
 clusters = 4
-numTrips = 10000
+numTrips = 50000
 
 # NHTS2017 Data Location for Alex's Lab Computer
 df0 = pd.read_csv(r'C:\Users\Alex\Documents\NHTS_2017\trippub.CSV', header=0)
@@ -58,6 +58,7 @@ for idx, row in dfNHTS.iterrows():
         timeMinutes = hr + minute
         dfNHTS['STRTTIME'][idx] = timeMinutes
 '''
+
 # Convert End Times to minutes
 idx = 0
 for idx, row in dfNHTS.iterrows():
@@ -119,9 +120,9 @@ kHomeCenters = kHome.cluster_centers_
 #['ENDTIME','DWELTIME']
 #dfWork = dfNHTS.loc[(dfNHTS['WHYTRP1S'] == 10) & (dfNHTS['HHSTFIPS'] == 6)]
 
-'''
+
 # Work WHYTRP1S 
-dfWork = dfNHTS.loc[dfNHTS['WHYTRP1S'] == 10]
+dfWork = dfNHTS.loc[(dfNHTS['WHYTRP1S'] == 10)  & (dfNHTS['DWELTIME'] > 0)]
 dfWork = dfWork.filter(dfFilter)
 dfWork = dfWork.head(numTrips)
 dfWork = dfWork.reset_index()
@@ -132,6 +133,19 @@ kWorkPhi = kWork.labels_
 kWorkPhiPredict = kWork.predict(dfWork)
 kWorkCenters = kWork.cluster_centers_
 
+# Other WHYTRP1S 
+dfOther = dfNHTS.loc[(dfNHTS['WHYTRP1S'] != 1) & (dfNHTS['WHYTRP1S'] != 10) & (dfNHTS['DWELTIME'] > 0)]
+dfOther = dfOther.filter(dfFilter)
+dfOther = dfOther.head(numTrips)
+dfOther = dfOther.reset_index()
+dfOther = dfOther.drop(['index'], axis=1)
+
+kOther = KMeans(n_clusters=clusters, init='k-means++', n_init=10, max_iter=300).fit(dfOther)
+kOtherPhi = kOther.labels_
+kOtherPhiPredict = kOther.predict(dfWork)
+kOtherCenters = kOther.cluster_centers_
+
+'''
 
 # School WHYTRP1S 
 dfSchool = dfNHTS.loc[dfNHTS['WHYTRP1S'] == 20]
@@ -224,10 +238,11 @@ elapsed = 0
 timeExec= []
 start_time = timeit.default_timer()
 
-dfPlot = dfHome
-matPlot = dfPlot.as_matrix()
-phi_true = kHomePhi
-centers = kHomeCenters
+dfPlot = dfWork
+matPlot = dfWork.as_matrix()
+
+phi_true = kWorkPhi
+centers = kWorkCenters
 
 rows  = dfPlot.shape[0]
 
@@ -268,7 +283,7 @@ k6 = []
 k7 = []
 k8 = []
 k9 = []
-
+clusterWeights = np.zeros(clusters)
 
 for j in range(0,len(dfPlot.index)):
     if phi_true[j] == 0 and clusters > 0:
@@ -292,22 +307,31 @@ for j in range(0,len(dfPlot.index)):
 
 if clusters > 0:
     dfK1 = dfPlot.filter(k1, axis = 0)
+    clusterWeights[0] = len(k1)/len(dfPlot)
 if clusters > 1:    
     dfK2 = dfPlot.filter(k2, axis = 0)
+    clusterWeights[1] = len(k2)/len(dfPlot)
 if clusters > 2:
     dfK3 = dfPlot.filter(k3, axis = 0)
+    clusterWeights[2] = len(k3)/len(dfPlot)
 if clusters > 3:    
     dfK4 = dfPlot.filter(k4, axis = 0)
+    clusterWeights[3] = len(k4)/len(dfPlot)
 if clusters > 4:
     dfK5 = dfPlot.filter(k5, axis = 0)
+    clusterWeights[4] = len(k5)/len(dfPlot)
 if clusters > 5:
     dfK6 = dfPlot.filter(k6, axis = 0)
+    clusterWeights[5] = len(k6)/len(dfPlot)
 if clusters > 6:
     dfK7 = dfPlot.filter(k7, axis = 0)
+    clusterWeights[6] = len(k7)/len(dfPlot)
 if clusters > 7:
     dfK8 = dfPlot.filter(k8, axis = 0)
+    clusterWeights[7] = len(k8)/len(dfPlot)
 if clusters > 8:
     dfK9 = dfPlot.filter(k9, axis = 0)
+    clusterWeights[8] = len(k9)/len(dfPlot)
 
 plt.figure(figsize=(8,6))
 
@@ -352,7 +376,7 @@ if clusters > 5:
         plt.scatter(dfK6.loc[row][0],dfK6.loc[row][1],c='y',marker=".")
     
     print('Cluster - - - - - - 6')
-
+'''
 if clusters > 6:    
     for k in range(len(dfK7)):
         row = dfK7.index[k]
@@ -373,14 +397,17 @@ if clusters > 8:
         plt.scatter(dfK9.loc[row][0],dfK9.loc[row][1],c='y',marker=".")
     
     print('Cluster - - - - - - - - - 9')  
-  
+'''
+
 # Plot k-Mean Centers
-plt.scatter(centers[:,0],centers[:,1],marker='v')
+#plt.scatter(centers[:,0],centers[:,1],marker='v')
 
 # Plot Real Centers (centers in domain)
-plt.scatter(centersReal[:,0],centersReal[:,1],c='w',marker='*',s=5)
+#plt.scatter(centersReal[:,0],centersReal[:,1],c='w',marker='*',s=5)
+# Plot Real Centers (centers in domain)
+plt.scatter(centersReal[:,0],centersReal[:,1],c='b',marker='v',s=5)
 
-plt.title('Home 2-D Clusters: Military Time ')
+plt.title('Work 2-D Clusters')
 plt.xlabel(colNames[0])
 plt.ylabel(colNames[1])
 plt.show()
