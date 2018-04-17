@@ -27,9 +27,11 @@ def to_percent(y, position):
         return s + '%'
 
 
+max0 = dfPlot.max()[0]  
+
 x1 = matK1[:,0]
 x1.sort()
-x1 = x1*max0
+x1 = x1*max0*(1440/max0)
 
 param1 = norm.fit(x1) # distribution fitting
 # now, param[0] and param[1] are the mean and 
@@ -43,21 +45,21 @@ pdf1 = norm.pdf(x1)
 
 x2 = matK2[:,0]
 x2.sort()
-x2 = x2*max0
+x2 = x2*max0*(1440/max0)
 param2 = norm.fit(x2)
 pdf_fitted2 = norm.pdf(x2,loc=param2[0],scale=param2[1])
 pdf2 = norm.pdf(x2)
 
 x3 = matK3[:,0]
 x3.sort()
-x3 = x3*max0
+x3 = x3*max0*(1440/max0)
 param3 = norm.fit(x3)
 pdf_fitted3 = norm.pdf(x3,loc=param3[0],scale=param3[1])
 pdf3 = norm.pdf(x3)
 
 x4 = matK4[:,0]
 x4.sort()
-x4 = x4*max0
+x4 = x4*max0*(1440/max0)
 param4 = norm.fit(x4)
 pdf_fitted4 = norm.pdf(x4,loc=param4[0],scale=param4[1])
 pdf4 = norm.pdf(x4)
@@ -109,12 +111,12 @@ formatter = FuncFormatter(to_percent)
 
 # Set the formatter
 #plt.yticks(np.arange(0, 0.00275, step=0.00025))
-plt.title('Work - Cluster Normal Distributions')
+plt.title('Work k++ Dwell Time Normal Distributions')
 plt.gca().yaxis.set_major_formatter(formatter)
 plt.xlabel('ENDTIME (minutes)')
 plt.xlim([0,1440])
 plt.xticks(np.arange(0, 1440, step=120))
-plt.legend(bbox_to_anchor=(0.95, 0.9)) 
+plt.legend(bbox_to_anchor=(0.92, 0.92)) 
 
 plt.show()
 

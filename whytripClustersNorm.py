@@ -30,14 +30,16 @@ firstRAWrows = df0.head(50)
 #colNames = ['STRTTIME','ENDTIME','WHYTRP1S']
 #dfFilter = ['STRTTIME','ENDTIME']
 #-- End vs. Dwell --#
-colNames = ['ENDTIME','DWELTIME','WHYTRP1S']
-dfFilter = ['ENDTIME','DWELTIME']
+#colNames = ['ENDTIME','DWELTIME','WHYTRP1S']
+#dfFilter = ['ENDTIME','DWELTIME']
 #-- Start vs. Trip Miles --#
-#colNames = ['STRTTIME','TRPMILES','WHYTRP1S']
-#dfFilter = ['STRTTIME','TRPMILES']
-
+colNames = ['ENDTIME','TRPMILES','WHYTRP1S']
+dfFilter = ['ENDTIME','TRPMILES']
 dfNHTS = df0.filter(colNames, axis=1)
+dfNHTS = dfNHTS.loc[(dfNHTS['TRPMILES'] < 30) & (dfNHTS['TRPMILES'] > 0)]
+dfNHTS = dfNHTS.reset_index()
 dfNHTS = dfNHTS.head(numTrips)
+dfNHTS = dfNHTS.drop(['index'], axis=1)
 firstNHTSrows = dfNHTS.head(50)   
 
 '''
@@ -68,22 +70,28 @@ for idx, row in dfNHTS.iterrows():
         hr = hr * 60
         minute = int(str(dfNHTS['ENDTIME'][idx])[2] + str(dfNHTS['ENDTIME'][idx])[3])
         timeMinutes = hr + minute
+        #dfNHTS.loc[dfNHTS['ENDTIME'][idx]] = timeMinutes
+        #dfNHTS.loc[idx, 0] = timeMinutes
         dfNHTS['ENDTIME'][idx] = timeMinutes
     elif len(str(dfNHTS['ENDTIME'][idx])) == 3:
         hr = int(str(dfNHTS['ENDTIME'][idx])[0])
         hr = hr * 60
         minute = int(str(dfNHTS['ENDTIME'][idx])[1] + str(dfNHTS['ENDTIME'][idx])[2])
         timeMinutes = hr + minute
+        #dfNHTS.loc[idx, 0] = timeMinutes
+        #dfNHTS.loc[dfNHTS['ENDTIME'][idx]] = timeMinutes
         dfNHTS['ENDTIME'][idx] = timeMinutes
 
 
+# %% Calculate Real Centers
 # For START v. END time normalization
 #dfNHTS.iloc[:,0] = dfNHTS.iloc[:,0]/dfNHTS.max()[0] #Normalize STRTTIME
 #dfNHTS.iloc[:,1] = dfNHTS.iloc[:,1]/dfNHTS.max()[1] #Normalize ENDTIME
-max0 = dfNHTS.max()[0]    
+#max0 = dfNHTS.max()[0]    
+max0 = dfNHTS.max()[0]   
 max1 = dfNHTS.max()[1]   
 
-min0 = dfNHTS.min()[0]    
+min0 = dfNHTS.min()[0]     
 min1 = dfNHTS.min()[1]  
 
 
@@ -107,7 +115,10 @@ dfNHTS.iloc[:,1] = dfNHTS.iloc[:,1]/dfNHTS.max()[1] #Normalize TRPMILES
 firstNHTSrows = dfNHTS.head(50) 
 
 # Home WHYTRP1S 
-dfHome = dfNHTS.loc[(dfNHTS['WHYTRP1S'] == 1) & (dfNHTS['DWELTIME'] > 0)]
+dfHome = dfNHTS.loc[(dfNHTS['WHYTRP1S'] == 1)]# & (dfNHTS['TRPMILES'] < 30)] #(dfNHTS['DWELTIME'] > 0)]
+
+dfHome.iloc[:,1] = (dfHome.iloc[:,1]-dfHome.min()[1])/(dfHome.max()[1]-dfHome.min()[1]) #Normalize 
+
 dfHome = dfHome.filter(dfFilter)
 dfHome = dfHome.head(numTrips)
 dfHome = dfHome.reset_index()
@@ -122,7 +133,10 @@ kHomeCenters = kHome.cluster_centers_
 
 
 # Work WHYTRP1S 
-dfWork = dfNHTS.loc[(dfNHTS['WHYTRP1S'] == 10)  & (dfNHTS['DWELTIME'] > 0)]
+dfWork = dfNHTS.loc[(dfNHTS['WHYTRP1S'] == 10)]# & (dfNHTS['DWELTIME'] > 0)]
+
+dfWork.iloc[:,1] = (dfWork.iloc[:,1]-dfWork.min()[1])/(dfWork.max()[1]-dfWork.min()[1]) #Normalize 
+
 dfWork = dfWork.filter(dfFilter)
 dfWork = dfWork.head(numTrips)
 dfWork = dfWork.reset_index()
@@ -134,7 +148,10 @@ kWorkPhiPredict = kWork.predict(dfWork)
 kWorkCenters = kWork.cluster_centers_
 
 # Other WHYTRP1S 
-dfOther = dfNHTS.loc[(dfNHTS['WHYTRP1S'] != 1) & (dfNHTS['WHYTRP1S'] != 10) & (dfNHTS['DWELTIME'] > 0)]
+dfOther = dfNHTS.loc[(dfNHTS['WHYTRP1S'] != 1) & (dfNHTS['WHYTRP1S'] != 10)] # & (dfNHTS['TRPMILES'] < 30)] #& (dfNHTS['DWELTIME'] > 0)]
+
+dfOther.iloc[:,1] = (dfOther.iloc[:,1]-dfOther.min()[1])/(dfOther.max()[1]-dfOther.min()[1]) #Normalize 
+
 dfOther = dfOther.filter(dfFilter)
 dfOther = dfOther.head(numTrips)
 dfOther = dfOther.reset_index()
@@ -333,6 +350,7 @@ if clusters > 8:
     dfK9 = dfPlot.filter(k9, axis = 0)
     clusterWeights[8] = len(k9)/len(dfPlot)
 
+
 plt.figure(figsize=(8,6))
 
 if clusters > 0:
@@ -405,9 +423,9 @@ if clusters > 8:
 # Plot Real Centers (centers in domain)
 #plt.scatter(centersReal[:,0],centersReal[:,1],c='w',marker='*',s=5)
 # Plot Real Centers (centers in domain)
-plt.scatter(centersReal[:,0],centersReal[:,1],c='b',marker='v',s=5)
+plt.scatter(centersReal[:,0],centersReal[:,1],c='m',marker='v',s=8)
 
-plt.title('Work 2-D Clusters')
+plt.title('Work k++ Clusters')
 plt.xlabel(colNames[0])
 plt.ylabel(colNames[1])
 plt.show()
