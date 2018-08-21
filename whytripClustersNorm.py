@@ -19,7 +19,7 @@ start_time = timeit.default_timer()
 
 # Variables
 clusters = 4
-numTrips = 50000
+numTrips = 5000
 
 # NHTS2017 Data Location for Alex's Lab Computer
 df0 = pd.read_csv(r'C:\Users\Alex\Documents\NHTS_2017\trippub.CSV', header=0)
@@ -255,11 +255,11 @@ elapsed = 0
 timeExec= []
 start_time = timeit.default_timer()
 
-dfPlot = dfWork
-matPlot = dfWork.as_matrix()
+dfPlot = dfOther
+matPlot = dfOther.as_matrix()
 
-phi_true = kWorkPhi
-centers = kWorkCenters
+phi_true = kOtherPhi
+centers = kOtherCenters
 
 rows  = dfPlot.shape[0]
 

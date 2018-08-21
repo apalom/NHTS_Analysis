@@ -1,36 +1,29 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 19 09:28:58 2018
+Created on Fri Apr 20 11:33:32 2018
 
 @author: Alex
 """
 
-import scipy
-from scipy import stats
-from scipy.stats import norm
-#from pylab import plot,show,hist,figure,title
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+'''
+x = x1
+num_bins = 10
+counts, bins = np.histogram(x, bins=num_bins)
+bins = bins[:-1] + (bins[1] - bins[0])/2
+probs = counts/float(counts.sum())
+print(probs.sum()) # 1.0
+plt.bar(bins, probs, 1.0/num_bins)
+plt.show()
+'''
+
+from scipy.stats import poisson
+import numpy as np 
 import matplotlib.pyplot as plt
 
-x = matK3[:,0]
-x.sort()
+x= x1
+plt.plot(x, norm.pmf(x,502))
 
-x = x*max0
-
-param = norm.fit(x) # distribution fitting
-# now, param[0] and param[1] are the mean and 
-print('Mean:', param[0])
-print('Std Dev:', param[1])
-
-# fitted distribution
-pdf_fitted = norm.pdf(x,loc=param[0],scale=param[1])
-
-# original distribution
-pdf = norm.pdf(x)
-
-plt.title('Normal distribution')
-plt.plot(x,pdf_fitted,'b-')
-plt.hist(x,normed=1,alpha=.3)
 plt.show()
-
-
-
