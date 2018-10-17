@@ -8,19 +8,12 @@ Created on Sun Feb 18 22:57:53 2018
 # import libraries
 import pandas as pd
 import timeit
-import matplotlib.pyplot as plt
 
 # initialize values
 start_time = timeit.default_timer()
-whyID = {}
-whyIDsum = {}
-whyIDsumList = []
 
-# NHTS2009 Data Location for Alex's Laptop 
+# Import NHTS2009 Data
 df0 = pd.read_csv(r'C:\Users\avi_b\Box\CS6140 Project\Data\CSV\DAYV2PUB.CSV', header=0)
-
-# NHTS2009 Data Location for Alex's Lab Computer
-# df0 = pd.read_csv(r'C:\Users\Alex\Google Drive\Classes\18_Spring\CS6140 Data Mining\CS6140 Project\Data\CSV\DAYV2PUB.CSV', header=0)
 
 # filter dataframe zero (raw NHTS2009) to columns listed in filter
 df1 = df0.filter(['TDCASEID','TRAVDAY','STRTTIME','DWELTIME','ENDTIME','TRIPPURP',
