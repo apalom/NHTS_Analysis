@@ -12,9 +12,19 @@ import timeit
 # initialize values
 start_time = timeit.default_timer()
 
+<<<<<<< HEAD
 # Import NHTS2009 Data
 df0 = pd.read_csv(r'C:\Users\avi_b\Box\CS6140 Project\Data\CSV\DAYV2PUB.CSV', header=0)
 
+=======
+# NHTS2009 Data Location for Alex's Laptop 
+#df0 = pd.read_csv(r'C:\Users\avi_b\Box\CS6140 Project\Data\CSV\DAYV2PUB.CSV', header=0)
+
+# NHTS2009 Data Location for Alex's Lab Computer
+df0 = pd.read_csv(r'C:\Users\Alex\Documents\NHTS_2017\trippub.CSV', header=0)
+#df0 = pd.read_csv(r'C:\Users\Alex Palomino\Documents\NHTS_2017\trippub.CSV', header=0)
+
+>>>>>>> Alex1
 # filter dataframe zero (raw NHTS2009) to columns listed in filter
 df1 = df0.filter(['TDCASEID','TRAVDAY','STRTTIME','DWELTIME','ENDTIME','TRIPPURP',
                   'WHYFROM','WHYTO','WHYTRP1S','WHYTRP90','WHODROVE',
@@ -51,8 +61,8 @@ print('Execution time: {0:.4f} sec'.format(elapsed))
 # %% plotting section
 
 # plots histogram
-plotHistSmry = df1['WHYTRP1S'].hist(bins=25)
-plotPieSmry = plt.pie(df1['WHYTRP1S'])
+#plotHistSmry = df1['WHYTRP1S'].hist(bins=25)
+#plotPieSmry = plt.pie(df1['WHYTRP1S'])
 #plotPieSmry = plt.pie(df1['WHYTRP1S'], labels=whyIDsumList, autopct='%1.0f%%)
 #plt.plot("whyDescSmry",type="bar")
 #df1["WHYFROM"].plot(kind="bar")
