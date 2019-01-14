@@ -68,7 +68,7 @@ plt.xticks(np.arange(0, qE_high, 2))
 plt.ylabel('Frequency')
 plt.title('NHTS 2017 Trip Miles')
 
-#%% Charging DCFC Need
+#%% Charging Need
 
 df_time1 = df_time.filter(['HOUSEID', 'VEHID', 'TDTRPNUM', 'TDCASEID', 'DWELTIME', 'TRPMILES'], axis = 1)
 
@@ -80,18 +80,35 @@ kwhPerMile = 0.33
 
 houses = list(set(df_time1.HOUSEID))
 
+df_chgrNeed = pd.DataFrame(np.zeros((len(df_time1),2)), columns=['TDCASEID', 'CHARGERKW'])
+
+i = 0;
+
 for h in houses:
     dfTemp = df_time1[df_time1.HOUSEID == h]
     
     if len(dfTemp) == 1:
         chgrNeed = 2 * dfTemp.TRPMILES * kwhPerMile * 60 / dfTemp.DWELTIME
+        caseID = dfTemp.TDCASEID
+        
+        df_chgrNeed.iloc[i] = [caseID, chgrNeed]
+        i += 1;
     
     else: 
         vehicles = list(set(dfTemp.VEHID))
     
         for v in vehicles:
-            dfTemp = dfTemp[dfTemp.VEHID == v] 
+            dfTemp1 = dfTemp[dfTemp.VEHID == v] 
+            
+            if len(dfTemp) == 1:
+                chgrNeed = 2 * dfTemp.TRPMILES * kwhPerMile * 60 / dfTemp.DWELTIME
+                caseID = dfTemp.TDCASEID
+        
+        df_chgrNeed.iloc[i] = [caseID, chgrNeed]
+        i += 1;
+            
     
+
 
 
 
