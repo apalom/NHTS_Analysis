@@ -26,8 +26,7 @@ dataTypes = data.dtypes;
 
 allColumns = list(data);
 
-#%%
-
+#%% Data Filters
 
 data = data[data.TRPMILES > 0]
 data = data[(data.TRPTRANS > 0) & (data.TRPTRANS < 6)] #6 is RV transport
@@ -52,5 +51,48 @@ plt.xticks(np.arange(0, qE_high, 60))
 plt.ylabel('Frequency')
 plt.title('NHTS 2017 Dwell Time')
 
+#%% TRIPMILE HISTOGRAM
 
-#%% DWELTIME HISTOGRAM
+qE_high = data.TRPMILES.quantile(0.9545); #remove 2 std dev outlier
+qE_low = data.TRPMILES.quantile(1-0.9545); #remove 2 std dev outlier
+
+df_miles = data[(data.TRPMILES > qE_low) & (data.TRPMILES < qE_high)]
+
+binEdges = np.arange(0, qE_high, 1)
+numBins = int(np.sqrt(len(df_miles.TRPMILES)));
+
+n, bins, patches = plt.hist(x=df_miles.TRPMILES, bins=binEdges, density=True, color='grey', rwidth=0.85)
+
+plt.xlabel('Trip Miles (mi)')
+plt.xticks(np.arange(0, qE_high, 2))
+plt.ylabel('Frequency')
+plt.title('NHTS 2017 Trip Miles')
+
+#%% Charging DCFC Need
+
+df_time1 = df_time.filter(['HOUSEID', 'PERSONID', 'TDTRPNUM', 'TDCASEID', 'DWELTIME', 'TRPMILES'], axis = 1)
+
+df_time1 = df_time1.reset_index(drop=True)
+
+df_time1 = df_time1.sort_values(by=['HOUSEID', 'PERSONID', 'TDTRPNUM'])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
