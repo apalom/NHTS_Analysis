@@ -70,13 +70,28 @@ plt.title('NHTS 2017 Trip Miles')
 
 #%% Charging DCFC Need
 
-df_time1 = df_time.filter(['HOUSEID', 'PERSONID', 'TDTRPNUM', 'TDCASEID', 'DWELTIME', 'TRPMILES'], axis = 1)
+df_time1 = df_time.filter(['HOUSEID', 'VEHID', 'TDTRPNUM', 'TDCASEID', 'DWELTIME', 'TRPMILES'], axis = 1)
 
 df_time1 = df_time1.reset_index(drop=True)
 
-df_time1 = df_time1.sort_values(by=['HOUSEID', 'PERSONID', 'TDTRPNUM'])
+df_time1 = df_time1.sort_values(by=['HOUSEID', 'VEHID', 'TDTRPNUM'])
 
+kwhPerMile = 0.33
 
+houses = list(set(df_time1.HOUSEID))
+
+for h in houses:
+    dfTemp = df_time1[df_time1.HOUSEID == h]
+    
+    if len(dfTemp) == 1:
+        chgrNeed = 2 * dfTemp.TRPMILES * kwhPerMile * 60 / dfTemp.DWELTIME
+    
+    else: 
+        vehicles = list(set(dfTemp.VEHID))
+    
+        for v in vehicles:
+            dfTemp = dfTemp[dfTemp.VEHID == v] 
+    
 
 
 
