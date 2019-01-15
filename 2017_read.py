@@ -89,10 +89,11 @@ for h in houses:
     
     if len(dfTemp) == 1:
         chgrNeed = 2 * dfTemp.TRPMILES * kwhPerMile * 60 / dfTemp.DWELTIME
-        caseID = dfTemp.TDCASEID
+        caseID = int(dfTemp.iloc[0].TDCASEID)
         
+        print('a', i)        
         df_chgrNeed.iloc[i] = [caseID, chgrNeed]
-        i += 1;
+        i += 1
     
     else: 
         vehicles = list(set(dfTemp.VEHID))
@@ -100,31 +101,56 @@ for h in houses:
         for v in vehicles:
             dfTemp1 = dfTemp[dfTemp.VEHID == v] 
             
-            if len(dfTemp) == 1:
-                chgrNeed = 2 * dfTemp.TRPMILES * kwhPerMile * 60 / dfTemp.DWELTIME
-                caseID = dfTemp.TDCASEID
-        
-        df_chgrNeed.iloc[i] = [caseID, chgrNeed]
-        i += 1;
+            if len(dfTemp1) == 1:
+                chgrNeed = 2 * dfTemp1.iloc[0].TRPMILES * kwhPerMile * 60 / dfTemp1.iloc[0].DWELTIME
+                caseID = int(dfTemp1.iloc[0].TDCASEID)
+                
+                print('b', i)
+                df_chgrNeed.iloc[i] = [caseID, chgrNeed]
+                i += 1
+                
+            else:
+                for j in range(len(dfTemp1)):
+                    if j < len(dfTemp1)-1:
+                        dist = dfTemp1.iloc[j].TRPMILES + dfTemp1.iloc[j+1].TRPMILES
+                        
+                        chgrNeed = 2 * dist * kwhPerMile * 60 / dfTemp1.iloc[j].DWELTIME
+                        caseID = int(dfTemp1.iloc[0].TDCASEID)
+                        
+                        print('c', i)
+                        df_chgrNeed.iloc[i] = [caseID, chgrNeed]
+                        i += 1
             
-    
+                    if j == len(dfTemp1)-1:
+                        
+                        chgrNeed = 2 * dfTemp1.iloc[j].TRPMILES * kwhPerMile * 60 / dfTemp1.iloc[j].DWELTIME
+                        caseID = int(dfTemp1.iloc[j].TDCASEID)
+                        
+                        print('d', i)
+                        df_chgrNeed.iloc[i] = [caseID, chgrNeed]
+                        i += 1
+
+#%% CHARGERKW Histogram
+                        
+qE_high = df_chgrNeed.CHARGERKW.quantile(0.9545); #remove 2 std dev outlier
+qE_low = df_chgrNeed.CHARGERKW.quantile(1-0.9545); #remove 2 std dev outlier
+
+df_need = df_chgrNeed[(df_chgrNeed.CHARGERKW > qE_low) & (df_chgrNeed.CHARGERKW < qE_high)]
+
+binEdges = np.arange(0, qE_high, 5)
+numBins = int(np.sqrt(len(df_need.CHARGERKW)));
+
+n, bins, patches = plt.hist(x=df_need.CHARGERKW, bins=binEdges, density=False, color='grey', rwidth=0.85)
+
+plt.xlabel('Charger Demand (kW)')
+plt.xticks(np.arange(0, qE_high, 10))
+plt.ylabel('Frequency')
+plt.title('NHTS 2017 Trip Charger Need')
 
 
+#%% Export data
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+df_need.to_csv('nhts2017_chgrNeed_removeOutlier.csv')
 
 
 
